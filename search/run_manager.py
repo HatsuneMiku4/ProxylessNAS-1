@@ -255,7 +255,7 @@ class RunManager:
         else:
             net = self.net.module
 
-        if l_type == 'mobile':
+        if l_type in ['mobile', 'fpga']:
             predicted_latency = 0
             try:
                 assert isinstance(net, ProxylessNASNets)

@@ -28,7 +28,6 @@ ref_values = {
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', type=str, default=None)
-parser.add_argument('--imagenet_path', type=str, default=None)
 parser.add_argument('--gpu', help='gpu available', default='0,1,2,3')
 parser.add_argument('--resume', action='store_true')
 parser.add_argument('--debug', help='freeze the weight parameters', action='store_true')
@@ -83,7 +82,7 @@ parser.add_argument('--arch_adam_beta1', type=float, default=0)  # arch_opt_para
 parser.add_argument('--arch_adam_beta2', type=float, default=0.999)  # arch_opt_param
 parser.add_argument('--arch_adam_eps', type=float, default=1e-8)  # arch_opt_param
 parser.add_argument('--arch_weight_decay', type=float, default=0)
-parser.add_argument('--target_hardware', type=str, default=None, choices=['mobile', 'cpu', 'gpu8', 'flops', None])
+parser.add_argument('--target_hardware', type=str, default=None, choices=['fpga', 'mobile', 'cpu', 'gpu8', 'flops', None])
 """ Grad hyper-parameters """
 parser.add_argument('--grad_update_arch_param_every', type=int, default=5)
 parser.add_argument('--grad_update_steps', type=int, default=1)
@@ -104,6 +103,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     torch.manual_seed(args.manual_seed)
+    # noinspection PyUnresolvedReferences
     torch.cuda.manual_seed_all(args.manual_seed)
     np.random.seed(args.manual_seed)
 

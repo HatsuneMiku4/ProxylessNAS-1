@@ -15,7 +15,6 @@ from run_manager import RunManager
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', type=str, default=None)
-parser.add_argument('--imagenet_path', type=str, default=None)
 parser.add_argument('--gpu', help='gpu available', default='0,1,2,3')
 parser.add_argument('--train', action='store_true')
 

@@ -76,11 +76,11 @@ class MixedEdge(MyModule):
     def chosen_index(self):
         probs = self.probs_over_ops.data.cpu().numpy()
         index = int(np.argmax(probs))
-        return index, probs[index]
+        return index, probs[index], probs.tolist()
 
     @property
     def chosen_op(self):
-        index, _ = self.chosen_index
+        index, *_ = self.chosen_index
         return self.candidate_ops[index]
 
     @property
@@ -103,7 +103,7 @@ class MixedEdge(MyModule):
         return self.candidate_ops[self.active_index[0]]
 
     def set_chosen_op_active(self):
-        chosen_idx, _ = self.chosen_index
+        chosen_idx, *_ = self.chosen_index
         self.active_index = [chosen_idx]
         self.inactive_index = [_i for _i in range(0, chosen_idx)] + \
                               [_i for _i in range(chosen_idx + 1, self.n_choices)]
@@ -148,8 +148,8 @@ class MixedEdge(MyModule):
 
     @property
     def module_str(self):
-        chosen_index, probs = self.chosen_index
-        return 'Mix(%s, %.3f)' % (self.candidate_ops[chosen_index].module_str, probs)
+        chosen_index, probs, probs_all = self.chosen_index
+        return 'Mix(%s, %.3f) # %s' % (self.candidate_ops[chosen_index].module_str, probs, str(probs_all))
 
     @property
     def config(self):

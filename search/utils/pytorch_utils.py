@@ -23,7 +23,8 @@ def build_activation(act_func, inplace=True):
 
 # noinspection PyUnresolvedReferences
 def cross_entropy_with_label_smoothing(pred, target, label_smoothing=0.1):
-    logsoftmax = nn.LogSoftmax()
+    # UserWarning: Implicit dimension choice for log_softmax has been deprecated.
+    logsoftmax = nn.LogSoftmax(dim=1)
     n_classes = pred.size(1)
     # convert to one-hot
     target = torch.unsqueeze(target, 1)

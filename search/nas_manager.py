@@ -148,6 +148,8 @@ class ArchSearchRunManager:
     def __init__(self, path, super_net, run_config: RunConfig, arch_search_config: ArchSearchConfig):
         # init weight parameters & build weight_optimizer
         self.run_manager = RunManager(path, super_net, run_config, True)
+        if self.arch_search_config.target_hardware == 'fpga':
+            self.run_manager.latency_estimator = FPGALatencyEstimator()
 
         self.arch_search_config = arch_search_config
 
@@ -560,7 +562,7 @@ class ArchSearchRunManager:
         ce_loss = self.run_manager.criterion(output, labels)
         if self.arch_search_config.target_hardware is None:
             expected_value = None
-        elif self.arch_search_config.target_hardware == 'mobile':
+        elif self.arch_search_config.target_hardware in ['mobile', 'fpga']:
             expected_value = self.net.expected_latency(self.run_manager.latency_estimator)
         elif self.arch_search_config.target_hardware == 'flops':
             data_shape = [1] + list(self.run_manager.run_config.data_provider.data_shape)

@@ -133,7 +133,8 @@ class ImagenetDataProvider(DataProvider):
         return 224
 
 
-def make_imagenet_subset(path2subset, n_sub_classes, path2imagenet='/ssd/dataset/imagenet'):
+def make_imagenet_subset(path2subset, n_sub_classes, path2imagenet=None):
+    path2imagenet = path2imagenet or os.path.expanduser('~/data/imagenet/raw-data')
     imagenet_train_folder = os.path.join(path2imagenet, 'train')
     imagenet_val_folder = os.path.join(path2imagenet, 'val')
 
@@ -174,7 +175,7 @@ class ImageNet10DataProvider(ImagenetDataProvider):
     @property
     def save_path(self):
         if self._save_path is None:
-            self._save_path = '/ssd/dataset/subImagenet10'
+            self._save_path = os.path.expanduser('~/data/subImagenet10')
             if not os.path.exists(self._save_path):
                 make_imagenet_subset(self._save_path, self.n_classes)
         return self._save_path
@@ -193,7 +194,7 @@ class ImageNet100DataProvider(ImagenetDataProvider):
     @property
     def save_path(self):
         if self._save_path is None:
-            self._save_path = '/ssd/dataset/subImagenet100'
+            self._save_path = os.path.expanduser('~/data/subImagenet100')
             if not os.path.exists(self._save_path):
                 make_imagenet_subset(self._save_path, self.n_classes)
         return self._save_path
