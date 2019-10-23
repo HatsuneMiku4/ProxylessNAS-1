@@ -2,6 +2,8 @@
 # Han Cai, Ligeng Zhu, Song Han
 # International Conference on Learning Representations (ICLR), 2019.
 
+import shutil
+
 import torch.utils.data
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
@@ -129,3 +131,69 @@ class ImagenetDataProvider(DataProvider):
     @property
     def image_size(self):
         return 224
+
+
+def make_imagenet_subset(path2subset, n_sub_classes, path2imagenet='/ssd/dataset/imagenet'):
+    imagenet_train_folder = os.path.join(path2imagenet, 'train')
+    imagenet_val_folder = os.path.join(path2imagenet, 'val')
+
+    subfolders = sorted([f.path for f in os.scandir(imagenet_train_folder) if f.is_dir()])
+    np.random.seed(DataProvider.VALID_SEED)
+    np.random.shuffle(subfolders)
+
+    chosen_train_folders = subfolders[:n_sub_classes]
+    class_name_list = []
+    for train_folder in chosen_train_folders:
+        class_name = train_folder.split('/')[-1]
+        class_name_list.append(class_name)
+
+    print('=> Start building subset%d' % n_sub_classes)
+    for cls_name in class_name_list:
+        src_train_folder = os.path.join(imagenet_train_folder, cls_name)
+        target_train_folder = os.path.join(path2subset, 'train/%s' % cls_name)
+        shutil.copytree(src_train_folder, target_train_folder)
+        print('Train: %s -> %s' % (src_train_folder, target_train_folder))
+
+        src_val_folder = os.path.join(imagenet_val_folder, cls_name)
+        target_val_folder = os.path.join(path2subset, 'val/%s' % cls_name)
+        shutil.copytree(src_val_folder, target_val_folder)
+        print('Val: %s -> %s' % (src_val_folder, target_val_folder))
+    print('=> Finish building subset%d' % n_sub_classes)
+
+
+class ImageNet10DataProvider(ImagenetDataProvider):
+
+    @staticmethod
+    def name():
+        return 'imagenet10'
+
+    @property
+    def n_classes(self):
+        return 10
+
+    @property
+    def save_path(self):
+        if self._save_path is None:
+            self._save_path = '/ssd/dataset/subImagenet10'
+            if not os.path.exists(self._save_path):
+                make_imagenet_subset(self._save_path, self.n_classes)
+        return self._save_path
+
+
+class ImageNet100DataProvider(ImagenetDataProvider):
+
+    @staticmethod
+    def name():
+        return 'imagenet100'
+
+    @property
+    def n_classes(self):
+        return 100
+
+    @property
+    def save_path(self):
+        if self._save_path is None:
+            self._save_path = '/ssd/dataset/subImagenet100'
+            if not os.path.exists(self._save_path):
+                make_imagenet_subset(self._save_path, self.n_classes)
+        return self._save_path

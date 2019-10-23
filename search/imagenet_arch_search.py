@@ -99,7 +99,6 @@ parser.add_argument('--rl_update_steps_per_epoch', type=int, default=300)
 parser.add_argument('--rl_baseline_decay_weight', type=float, default=0.99)
 parser.add_argument('--rl_tradeoff_ratio', type=float, default=0.1)
 
-
 if __name__ == '__main__':
     args = parser.parse_args()
 
@@ -158,6 +157,7 @@ if __name__ == '__main__':
         args.ref_value = ref_values[args.target_hardware]['%.2f' % args.width_mult]
     if args.arch_algo == 'grad':
         from nas_manager import GradientArchSearchConfig
+
         if args.grad_reg_loss_type == 'add#linear':
             args.grad_reg_loss_params = {'lambda': args.grad_reg_loss_lambda}
         elif args.grad_reg_loss_type == 'mul#log':
@@ -170,6 +170,7 @@ if __name__ == '__main__':
         arch_search_config = GradientArchSearchConfig(**args.__dict__)
     elif args.arch_algo == 'rl':
         from nas_manager import RLArchSearchConfig
+
         arch_search_config = RLArchSearchConfig(**args.__dict__)
     else:
         raise NotImplementedError
@@ -190,6 +191,7 @@ if __name__ == '__main__':
             arch_search_run_manager.load_model()
         except Exception:
             from pathlib import Path
+
             home = str(Path.home())
             warmup_path = os.path.join(
                 home, 'Workspace/Exp/arch_search/%s_ProxylessNAS_%.2f_%s/warmup.pth.tar' %

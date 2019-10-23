@@ -7,6 +7,7 @@ import numpy as np
 from utils import *
 
 
+# noinspection PyClassHasNoInit
 class DataProvider:
     VALID_SEED = 0  # random seed for the validation set
 
