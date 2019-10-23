@@ -16,7 +16,7 @@ def get_net_by_name(name):
 class ImagenetRunConfig(RunConfig):
 
     def __init__(self, n_epochs=150, init_lr=0.05, lr_schedule_type='cosine', lr_schedule_param=None,
-                 dataset='imagenet', train_batch_size=256, test_batch_size=500, valid_size=None,
+                 dataset='imagenet', imagenet_path=None, train_batch_size=256, test_batch_size=500, valid_size=None,
                  opt_type='sgd', opt_param=None, weight_decay=4e-5, label_smoothing=0.1, no_decay_keys='bn',
                  model_init='he_fout', init_div_groups=False, validation_frequency=1, print_frequency=10,
                  n_worker=32, resize_scale=0.08, distort_color='normal', **kwargs):
@@ -30,6 +30,7 @@ class ImagenetRunConfig(RunConfig):
         self.n_worker = n_worker
         self.resize_scale = resize_scale
         self.distort_color = distort_color
+        self.imagenet_path = imagenet_path
 
         print(kwargs.keys())
 
@@ -42,5 +43,6 @@ class ImagenetRunConfig(RunConfig):
             'n_worker': self.n_worker,
             'resize_scale': self.resize_scale,
             'distort_color': self.distort_color,
+            'save_path': self.imagenet_path
         }
 

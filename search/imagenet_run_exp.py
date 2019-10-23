@@ -15,6 +15,7 @@ from run_manager import RunManager
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', type=str, default=None)
+parser.add_argument('--imagenet_path', type=str, default=None)
 parser.add_argument('--gpu', help='gpu available', default='0,1,2,3')
 parser.add_argument('--train', action='store_true')
 
@@ -27,7 +28,7 @@ parser.add_argument('--init_lr', type=float, default=0.05)
 parser.add_argument('--lr_schedule_type', type=str, default='cosine')
 # lr_schedule_param
 
-parser.add_argument('--dataset', type=str, default='imagenet', choices=['imagenet'])
+parser.add_argument('--dataset', type=str, default='imagenet', choices=['imagenet', 'imagenet10', 'imagenet100'])
 parser.add_argument('--train_batch_size', type=int, default=256)
 parser.add_argument('--test_batch_size', type=int, default=500)
 parser.add_argument('--valid_size', type=int, default=None)
