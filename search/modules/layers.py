@@ -562,3 +562,53 @@ class ZeroLayer(MyModule):
     @staticmethod
     def is_zero_layer():
         return True
+
+
+class ChannelChoiceLayer(MyModule):
+    def __init__(self, in_channels, out_channels, mid_channels,
+                 use_bn=True, act_func='relu', ops_order='weight_bn_act'):
+        super(ChannelChoiceLayer, self).__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.mid_channels = mid_channels
+        self.use_bn = use_bn
+        self.act_func = act_func
+        self.ops_order = ops_order
+
+        self.squeeze = ConvLayer(in_channels, mid_channels, kernel_size=1, bias=False,
+                                 use_bn=use_bn, act_func=act_func, ops_order=ops_order)
+        # noinspection PyTypeChecker
+        self.expand = ConvLayer(mid_channels, out_channels, kernel_size=1, bias=False,
+                                use_bn=False, act_func=None, ops_order='weight')
+
+    def forward(self, x):
+        squeezed = self.squeeze(x)
+        expanded = self.expand(squeezed)
+        return expanded
+
+    @property
+    def module_str(self):
+        return '%d>%d<%d_ChannelChoice' % (self.in_channels, self.mid_channels, self.out_channels)
+
+    @property
+    def config(self):
+        return {
+            'name': ChannelChoiceLayer.__name__,
+            'in_channels': self.in_channels,
+            'out_channels': self.out_channels,
+            'mid_channels': self.mid_channels,
+            'use_bn': self.use_bn,
+            'act_func': self.act_func,
+            'ops_order': self.ops_order,
+        }
+
+    @staticmethod
+    def build_from_config(config):
+        return ChannelChoiceLayer(**config)
+
+    def get_flops(self, x):
+        flop1 = count_conv_flop(self.squeeze, x)
+        x = self.squeeze(x)
+        flop2 = count_conv_flop(self.expand, x)
+        x = self.expand(x)
+        return flop1 + flop2, x
