@@ -81,6 +81,7 @@ class FPGALatencyEstimator(LatencyEstimator):
     T_M = T_N = 64
     P_W_RANGE = (3, 7+1)
     P_M_RANGE = P_N_RANGE = (8, 64+1)
+    NUM_MULTIPLIER = 2048
 
     def __init__(self):
         super(FPGALatencyEstimator, self).__init__()
@@ -117,6 +118,7 @@ class FPGALatencyEstimator(LatencyEstimator):
         global P_W_RANGE, P_N_RANGE, P_M_RANGE
         best_lat, best_param = 10000, dict.fromkeys(['P_w', 'P_n', 'P_m'])
         for P_w, P_n, P_m in product(range(*P_W_RANGE), range(*P_N_RANGE), range(*P_M_RANGE)):
+            if P_w * P_n * P_m > FPGALatencyEstimator.NUM_MULTIPLIER: continue
             lat = FPGALatencyEstimator.conv_layer_latency(
                 *in_shape, *out_shape, r=kernel_size, stride=stride, group=is_dwconv,
                 P_w=P_w, P_n=P_n, P_m=P_m)

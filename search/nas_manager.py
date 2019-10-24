@@ -148,7 +148,7 @@ class ArchSearchRunManager:
     def __init__(self, path, super_net, run_config: RunConfig, arch_search_config: ArchSearchConfig):
         # init weight parameters & build weight_optimizer
         self.run_manager = RunManager(path, super_net, run_config, True)
-        if self.arch_search_config.target_hardware == 'fpga':
+        if arch_search_config.target_hardware == 'fpga':
             self.run_manager.latency_estimator = FPGALatencyEstimator()
 
         self.arch_search_config = arch_search_config
